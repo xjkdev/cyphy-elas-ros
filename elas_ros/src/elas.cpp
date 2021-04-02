@@ -82,11 +82,10 @@ public:
     local_nh.param<bool>("subsampling", subsampling, 0);
 
     // Topics
-    std::string stereo_ns = nh.resolveName("stereo");
-    std::string left_topic = ros::names::clean(stereo_ns + "/left/" + nh.resolveName("image"));
-    std::string right_topic = ros::names::clean(stereo_ns + "/right/" + nh.resolveName("image"));
-    std::string left_info_topic = stereo_ns + "/left/camera_info";
-    std::string right_info_topic = stereo_ns + "/right/camera_info";
+    std::string left_topic = "left_cam_topic";
+    std::string right_topic = "right_cam_topic";
+    std::string left_info_topic = "left_cam_info_topic";
+    std::string right_info_topic = "right_cam_info_topic";
 
     image_transport::ImageTransport it(nh);
     left_sub_.subscribe(it, left_topic, 1, transport);
@@ -284,7 +283,9 @@ public:
     // Stereo parameters
     float f = model_.right().fx();
     float T = model_.baseline();
+  T = 0.2;
     float depth_fact = T * f * 1000.0f;
+    // ROS_INFO("f: %f, T: %f,depth_fact: %f", f, T, depth_fact);
     uint16_t bad_point = std::numeric_limits<uint16_t>::max();
 
     // Have a synchronised pair of images, now to process using elas
